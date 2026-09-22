@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-1766ec86-df1a-44a2-8c7a-c47c41b11992/styles.css">
+<script src="_ds/modernist-1766ec86-df1a-44a2-8c7a-c47c41b11992/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&amp;display=swap">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select { font-family: inherit; }
+  a { color: var(--color-accent-700); text-decoration: underline; }
+  a:hover { color: var(--color-accent); }
+  ::selection { background: var(--color-accent-300); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--color-bg);">
+
+  <sc-if value="{{ estTitre }}" hint-placeholder-val="{{ true }}">
+    <div style="min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto;">
+      <div style="border-bottom: 2px solid var(--color-text); padding: 12px 24px; display: flex; gap: 24px; align-items: baseline; flex-wrap: wrap;">
+        <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;">Dossier shinobi</span>
+        <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700);">Jeu de rôle — registre des villages cachés</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: stretch;">
+        <div style="flex: 1 1 420px; min-width: 0; background: var(--color-accent); color: var(--color-bg); padding: 48px 24px 40px 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; border-right: 2px solid var(--color-text);">
+          <div>
+            <div style="font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; margin-bottom: 20px;">Campagne — prologue académie</div>
+            <h1 style="font-size: clamp(40px, 7vw, 92px); line-height: 0.92; margin: 0; font-weight: 800; letter-spacing: -0.02em; text-wrap: balance;">CRÉER UN<br>SHINOBI,<br>PUIS VIVRE<br>AVEC.</h1>
+          </div>
+          <p style="margin: 0; max-width: 46ch; font-size: 16px; line-height: 1.5;">Village, clan, kekkei genkai, réputation, moral. Chaque choix entre au dossier. Les jets de dés sont visibles et vos stats en décident.</p>
+        </div>
+
+        <div style="flex: 1 1 340px; min-width: 0; padding: 40px 24px; display: flex; flex-direction: column; gap: 24px;">
+          <div>
+            <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 8px;">Systèmes actifs</div>
+            <div style="border-top: 2px solid var(--color-text);">
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-300); font-size: 14px;"><span>Villages jouables</span><span style="font-weight: 600;">Konoha · Suna · Kiri</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-300); font-size: 14px;"><span>Clans au registre</span><span style="font-weight: 600;">{{ nbClans }}</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-300); font-size: 14px;"><span>Trames de clan exclusives</span><span style="font-weight: 600; text-align: right">Uchiha · Nara · Senju · Sabaku · Kaguya</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-300); font-size: 14px;"><span>Résolution</span><span style="font-weight: 600;">d20 + stat vs seuil</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-300); font-size: 14px;"><span>Échec au prologue</span><span style="font-weight: 600;">Jamais fatal — la trame bifurque</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 2px solid var(--color-text); font-size: 14px;"><span>Sauvegarde</span><span style="font-weight: 600;">Automatique, locale</span></div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; max-width: 420px;">
+            <button onClick="{{ onNouvelle }}" style="border: 2px solid var(--color-text); background: var(--color-accent); color: var(--color-bg); padding: 14px 16px; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; width: 100%;" style-hover="background:var(--color-accent-600)">Nouvelle partie</button>
+            <sc-if value="{{ aSauvegarde }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ onContinuer }}" style="border: 2px solid var(--color-text); background: transparent; color: var(--color-text); padding: 14px 16px; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; width: 100%;" style-hover="background:var(--color-accent-200)">Continuer — {{ resumeSauvegarde }}</button>
+            </sc-if>
+            <p style="margin: 8px 0 0 0; font-size: 12px; line-height: 1.5; color: var(--color-neutral-700); max-width: 44ch;">Œuvre de fan non officielle. Écriture originale ; noms de villages, de clans et de techniques repris de l'univers de référence.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 2px solid var(--color-text); padding: 10px 24px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-700);">Prologue — académie jusqu'à la diplômation · rang visé : genin</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ estCreation }}">
+    <div style="min-height: 100vh; display: grid; grid-template-rows: auto 1fr;">
+      <div style="border-bottom: 2px solid var(--color-text); padding: 12px 24px; display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap;">
+        <span style="font-weight: 800; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;">Création de personnage</span>
+        <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700);">Étape {{ etapeNum }} / 4 — {{ etapeNom }}</span>
+      </div>
+
+      <div style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+
+        <sc-if value="{{ etape0 }}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <h2 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.01em;">Provenance</h2>
+            <p style="margin: 0; max-width: 70ch; font-size: 15px; line-height: 1.55; color: var(--color-neutral-800);">Le village décide de la doctrine, des corps d'élite accessibles, du bijū gardé sur place et des trames exclusives. Trois villages sont jouables dans cette version ; les autres sont au registre.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; background: var(--color-text); border: 2px solid var(--color-text);">
+              <sc-for list="{{ villagesJouables }}" as="v" hint-placeholder-count="3">
+                <button onClick="{{ v.onPick }}" style="background: var(--color-bg); border: 0; padding: 18px 16px; text-align: left; display: flex; flex-direction: column; gap: 10px;" style-hover="background:var(--color-accent-200)">
+                  <span style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600;">{{ v.pays }}</span>
+                  <span style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em;">{{ v.nom }}</span>
+                  <span style="font-size: 13px; line-height: 1.5; color: var(--color-neutral-800);">{{ v.resume }}</span>
+                  <span style="border-top: 1px solid var(--color-neutral-300); padding-top: 8px; width: 100%; font-size: 12px; line-height: 1.6;"><b>Rang suprême</b> {{ v.kage }}<br><b>Bijū sur place</b> {{ v.bijuu }}<br><b>Bonus</b> {{ v.bonusTxt }}<br><b>Corps</b> {{ v.corpsTxt }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div>
+              <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Au registre — non jouables dans cette version</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <sc-for list="{{ villagesBloques }}" as="v" hint-placeholder-count="7">
+                  <span style="border: 1px solid var(--color-neutral-400); color: var(--color-neutral-700); padding: 5px 9px; font-size: 12px; letter-spacing: 0.04em;">{{ v.nom }} — {{ v.pays }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ etape1 }}">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <h2 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.01em;">Clan — {{ villageNom }}</h2>
+            <p style="margin: 0; max-width: 70ch; font-size: 15px; line-height: 1.55; color: var(--color-neutral-800);">Chaque clan porte sa spécificité, ses techniques de départ et sa contrainte. Les clans marqués TRAME EXCLUSIVE ouvrent un nœud narratif qui leur est propre dès le prologue.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; background: var(--color-text); border: 2px solid var(--color-text);">
+              <sc-for list="{{ clansVillage }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.onPick }}" style="background: var(--color-bg); border: 0; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 8px;" style-hover="background:var(--color-accent-200)">
+                  <span style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <span style="font-size: 20px; font-weight: 800;">{{ c.nom }}</span>
+                    <sc-if value="{{ c.trame }}" hint-placeholder-val="{{ false }}"><span style="background: var(--color-accent); color: var(--color-bg); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; padding: 3px 6px;">Trame exclusive</span></sc-if>
+                  </span>
+                  <span style="font-size: 13px; line-height: 1.5; color: var(--color-neutral-800);">{{ c.resume }}</span>
+                  <span style="border-top: 1px solid var(--color-neutral-300); padding-top: 8px; width: 100%; font-size: 12px; line-height: 1.6;"><b>Spécificité</b> {{ c.spec }}<br><b>Techniques</b> {{ c.techTxt }}<br><b>Bonus</b> {{ c.bonusTxt }}<br><b>Contrainte</b> {{ c.contrainte }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <button onClick="{{ onRetour }}" style="border: 2px solid var(--color-text); background: transparent; padding: 10px 14px; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; align-self: flex-start;" style-hover="background:var(--color-accent-200)">Retour</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ etape2 }}">
+          <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start;">
+            <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+              <h2 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.01em;">Identité</h2>
+              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;">Nom complet
+                <input value="{{ nom }}" onChange="{{ onNom }}" placeholder="Nom, prénom" style="border: 2px solid var(--color-text); background: var(--color-bg); padding: 11px 12px; font-size: 16px; letter-spacing: 0; text-transform: none; font-weight: 400;">
+              </label>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;">Genre</span>
+                <div style="display: flex; gap: 2px; background: var(--color-text); border: 2px solid var(--color-text); width: fit-content;">
+                  <sc-for list="{{ genres }}" as="g" hint-placeholder-count="3">
+                    <button onClick="{{ g.onPick }}" style="border: 0; padding: 10px 16px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; background: {{ g.bg }}; color: {{ g.fg }};">{{ g.nom }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;">Trait d'origine</span>
+                <sc-for list="{{ origines }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.onPick }}" style="border: 2px solid var(--color-text); padding: 10px 12px; font-size: 14px; text-align: left; width: 100%; background: {{ o.bg }}; color: {{ o.fg }};">{{ o.nom }} — <span style="font-size: 12px;">{{ o.effet }}</span></button>
+                </sc-for>
+              </div>
+              <button onClick="{{ onRetour }}" style="border: 2px solid var(--color-text); background: transparent; padding: 10px 14px; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; align-self: flex-start;" style-hover="background:var(--color-accent-200)">Retour</button>
+            </div>
+
+            <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 12px; border-left: 2px solid var(--color-text); padding-left: 24px;">
+              <h2 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.01em;">Aptitudes</h2>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--color-text); padding-bottom: 8px;">
+                <span style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-700);">Points à répartir</span>
+                <span style="font-size: 30px; font-weight: 800; color: var(--color-accent-700);">{{ pool }}</span>
+              </div>
+              <sc-for list="{{ allocation }}" as="s" hint-placeholder-count="8">
+                <div style="display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--color-neutral-300);">
+                  <span style="font-size: 14px; font-weight: 500;">{{ s.nom }} <span style="color: var(--color-neutral-600); font-size: 12px;">{{ s.detail }}</span></span>
+                  <button onClick="{{ s.onDec }}" style="border: 2px solid var(--color-text); background: transparent; width: 30px; height: 30px; font-size: 16px; font-weight: 800; line-height: 1;" style-hover="background:var(--color-accent-200)">−</button>
+                  <span style="font-size: 18px; font-weight: 800; min-width: 28px; text-align: right;">{{ s.total }}</span>
+                  <button onClick="{{ s.onInc }}" style="border: 2px solid var(--color-text); background: transparent; width: 30px; height: 30px; font-size: 16px; font-weight: 800; line-height: 1;" style-hover="background:var(--color-accent-200)">+</button>
+                </div>
+              </sc-for>
+              <button onClick="{{ onValiderStats }}" style="border: 2px solid var(--color-text); background: var(--color-accent); color: var(--color-bg); padding: 13px 16px; font-size: 14px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left; margin-top: 8px;" style-hover="background:var(--color-accent-600)">Valider la fiche</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ etape3 }}">
+          <div style="display: flex; flex-direction: column; gap: 16px; max-width: 900px;">
+            <h2 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.01em;">Fiche de dossier</h2>
+            <div style="border: 2px solid var(--color-text);">
+              <div style="background: var(--color-text); color: var(--color-bg); padding: 14px 16px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                <span style="font-size: 22px; font-weight: 800;">{{ nomAffiche }}</span>
+                <span style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;">{{ villageNom }} · {{ clanNom }} · Élève</span>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                <sc-for list="{{ recap }}" as="r" hint-placeholder-count="6">
+                  <div style="padding: 14px 16px; border-right: 1px solid var(--color-neutral-300); border-bottom: 1px solid var(--color-neutral-300);">
+                    <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 6px;">{{ r.k }}</div>
+                    <div style="font-size: 14px; line-height: 1.5;">{{ r.v }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button onClick="{{ onLancer }}" style="border: 2px solid var(--color-text); background: var(--color-accent); color: var(--color-bg); padding: 14px 18px; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left;" style-hover="background:var(--color-accent-600)">Entrer à l'académie</button>
+              <button onClick="{{ onRetour }}" style="border: 2px solid var(--color-text); background: transparent; padding: 14px 18px; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left;" style-hover="background:var(--color-accent-200)">Modifier</button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ estJeu }}">
+    <div style="min-height: 100vh; display: grid; grid-template-rows: auto 1fr;">
+      <div style="border-bottom: 2px solid var(--color-text); display: flex; justify-content: space-between; align-items: stretch; flex-wrap: wrap;">
+        <div style="padding: 10px 24px; display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;">
+          <span style="font-weight: 800; font-size: 14px; letter-spacing: 0.06em;">{{ nomAffiche }}</span>
+          <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-700);">{{ clanNom }} · {{ villageNom }} · {{ rangNom }}</span>
+        </div>
+        <div style="display: flex; gap: 0; border-left: 2px solid var(--color-text);">
+          <sc-for list="{{ onglets }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onPick }}" style="border: 0; border-right: 1px solid var(--color-neutral-300); padding: 10px 18px; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: {{ t.bg }}; color: {{ t.fg }};">{{ t.nom }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: stretch;">
+        <div style="flex: 100 1 440px; min-width: 0; padding: 28px 24px 48px 24px;">
+
+          <sc-if value="{{ tabRecit }}" hint-placeholder-val="{{ true }}">
+            <div style="max-width: 72ch; display: flex; flex-direction: column; gap: 14px;">
+              <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600;">{{ node.lieu }}</div>
+              <h1 style="margin: 0; font-size: 34px; line-height: 1.05; font-weight: 800; letter-spacing: -0.015em;">{{ node.titre }}</h1>
+              <div style="border-top: 2px solid var(--color-text);"></div>
+              <sc-for list="{{ node.texte }}" as="p" hint-placeholder-count="3">
+                <p style="margin: 0; font-size: 16px; line-height: 1.62; color: var(--color-neutral-900); text-wrap: pretty;">{{ p.t }}</p>
+              </sc-for>
+
+              <sc-if value="{{ jetEnCours }}" hint-placeholder-val="{{ false }}">
+                <div style="border: 2px solid var(--color-text); margin-top: 10px;">
+                  <div style="background: var(--color-text); color: var(--color-bg); padding: 10px 14px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;">Jet — {{ jet.statNom }} · seuil {{ jet.seuil }}</div>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));">
+                    <div style="padding: 14px; border-right: 1px solid var(--color-neutral-300);"><div style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 4px;">d20</div><div style="font-size: 32px; font-weight: 800;">{{ jet.d20 }}</div></div>
+                    <div style="padding: 14px; border-right: 1px solid var(--color-neutral-300);"><div style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 4px;">Stat</div><div style="font-size: 32px; font-weight: 800;">{{ jet.mod }}</div></div>
+                    <div style="padding: 14px; border-right: 1px solid var(--color-neutral-300);"><div style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); margin-bottom: 4px;">Total</div><div style="font-size: 32px; font-weight: 800;">{{ jet.total }}</div></div>
+                    <div style="padding: 14px; background: {{ jet.verdictBg }}; color: {{ jet.verdictFg }};"><div style="font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px;">Verdict</div><div style="font-size: 20px; font-weight: 800; letter-spacing: 0.02em;">{{ jet.verdict }}</div></div>
+                  </div>
+                  <div style="border-top: 2px solid var(--color-text); padding: 12px 14px; font-size: 14px; line-height: 1.55;">{{ jet.suite }}</div>
+                  <button onClick="{{ onSuite }}" style="border: 0; border-top: 2px solid var(--color-text); background: var(--color-accent); color: var(--color-bg); padding: 13px 14px; width: 100%; text-align: left; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;" style-hover="background:var(--color-accent-600)">Continuer</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ choixOuverts }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                  <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; border-top: 2px solid var(--color-text); padding-top: 12px;">Décision</div>
+                  <sc-for list="{{ node.choix }}" as="c" hint-placeholder-count="3">
+                    <button onClick="{{ c.onPick }}" style="border: 2px solid var(--color-text); background: var(--color-bg); padding: 13px 14px; text-align: left; display: flex; justify-content: space-between; gap: 16px; align-items: baseline; font-size: 15px; line-height: 1.45; color: var(--color-text); width: 100%;" style-hover="background:var(--color-accent-200)">
+                      <span>{{ c.txt }}</span>
+                      <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; white-space: nowrap;">{{ c.test }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabCarte }}">
+            <div style="display: flex; flex-direction: column; gap: 18px;">
+              <div>
+                <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 6px;">Carte politique</div>
+                <h1 style="margin: 0 0 12px 0; font-size: 30px; font-weight: 800; letter-spacing: -0.015em;">Pays et villages cachés</h1>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 2px; background: var(--color-text); border: 2px solid var(--color-text);">
+                <sc-for list="{{ carte }}" as="p" hint-placeholder-count="10">
+                  <div style="padding: 14px; background: {{ p.bg }}; color: {{ p.fg }}; display: flex; flex-direction: column; gap: 6px; min-height: 132px;">
+                    <span style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;">{{ p.pays }}</span>
+                    <span style="font-size: 19px; font-weight: 800; line-height: 1.1;">{{ p.nom }}</span>
+                    <span style="font-size: 12px; line-height: 1.45;">{{ p.bijuu }}</span>
+                    <span style="margin-top: auto; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;">{{ p.etat }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div>
+                <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Registre des missions — {{ missionsEtat }}</div>
+                <div style="border-top: 2px solid var(--color-text);">
+                  <sc-for list="{{ missions }}" as="m" hint-placeholder-count="5">
+                    <div style="display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-neutral-300);">
+                      <span style="font-size: 18px; font-weight: 800; color: var(--color-accent-700);">{{ m.rang }}</span>
+                      <span><span style="font-size: 15px; font-weight: 600; display: block;">{{ m.nom }}</span><span style="font-size: 13px; color: var(--color-neutral-700); line-height: 1.45;">{{ m.res }} · {{ m.testTxt }}</span></span>
+                      <button onClick="{{ m.onRun }}" style="border: 2px solid var(--color-text); background: transparent; padding: 9px 14px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;" style-hover="background:var(--color-accent-200)">Accepter</button>
+                    </div>
+                    <sc-if value="{{ m.rapportOuvert }}" hint-placeholder-val="{{ false }}">
+                      <div style="border: 2px solid var(--color-text); margin: 0 0 14px 0; max-width: 620px;">
+                        <div style="background: var(--color-text); color: var(--color-bg); padding: 10px 14px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;">Compte rendu — {{ jet.statNom }} · seuil {{ jet.seuil }}</div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr);">
+                          <div style="padding: 12px; border-right: 1px solid var(--color-neutral-300);"><div style="font-size: 10px; text-transform: uppercase; color: var(--color-neutral-700);">d20</div><div style="font-size: 26px; font-weight: 800;">{{ jet.d20 }}</div></div>
+                          <div style="padding: 12px; border-right: 1px solid var(--color-neutral-300);"><div style="font-size: 10px; text-transform: uppercase; color: var(--color-neutral-700);">Stat</div><div style="font-size: 26px; font-weight: 800;">{{ jet.mod }}</div></div>
+                          <div style="padding: 12px; border-right: 1px solid var(--color-neutral-300);"><div style="font-size: 10px; text-transform: uppercase; color: var(--color-neutral-700);">Total</div><div style="font-size: 26px; font-weight: 800;">{{ jet.total }}</div></div>
+                          <div style="padding: 12px; background: {{ jet.verdictBg }}; color: {{ jet.verdictFg }};"><div style="font-size: 10px; text-transform: uppercase;">Verdict</div><div style="font-size: 17px; font-weight: 800;">{{ jet.verdict }}</div></div>
+                        </div>
+                        <div style="border-top: 2px solid var(--color-text); padding: 12px 14px; font-size: 14px;">{{ jet.suite }}</div>
+                        <button onClick="{{ onSuite }}" style="border: 0; border-top: 2px solid var(--color-text); background: var(--color-accent); color: var(--color-bg); padding: 12px 14px; width: 100%; text-align: left; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;" style-hover="background:var(--color-accent-600)">Classer le rapport</button>
+                      </div>
+                    </sc-if>
+                  </sc-for>
+                </div>
+              </div>
+
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabFiche }}">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div>
+                <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 6px;">Dossier personnel</div>
+                <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.015em;">{{ nomAffiche }} — {{ clanNom }}</h1>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2px; background: var(--color-text); border: 2px solid var(--color-text);">
+                <sc-for list="{{ fiche }}" as="r" hint-placeholder-count="6">
+                  <div style="background: var(--color-bg); padding: 14px;">
+                    <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 6px;">{{ r.k }}</div>
+                    <div style="font-size: 14px; line-height: 1.5;">{{ r.v }}</div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px;">
+                <div>
+                  <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Échelle des grades — {{ villageNom }}</div>
+                  <div style="border-top: 2px solid var(--color-text);">
+                    <sc-for list="{{ echelle }}" as="r" hint-placeholder-count="8">
+                      <div style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--color-neutral-300); font-size: 14px; color: {{ r.fg }}; font-weight: {{ r.fw }};"><span>{{ r.nom }}</span><span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;">{{ r.etat }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Trames suivies</div>
+                  <div style="border-top: 2px solid var(--color-text);">
+                    <sc-for list="{{ arcs }}" as="a" hint-placeholder-count="9">
+                      <div style="padding: 9px 0; border-bottom: 1px solid var(--color-neutral-300);"><div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 600;"><span>{{ a.nom }}</span><span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-700);">{{ a.etat }}</span></div><div style="font-size: 12px; color: var(--color-neutral-700);">{{ a.req }}</div></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Journal des décisions</div>
+                <div style="border-top: 2px solid var(--color-text); max-width: 78ch;">
+                  <sc-for list="{{ journal }}" as="j" hint-placeholder-count="3">
+                    <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--color-neutral-300);"><span style="font-size: 12px; font-weight: 800; color: var(--color-neutral-500);">{{ j.n }}</span><span style="font-size: 14px; line-height: 1.5;">{{ j.t }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabEntrainement }}">
+            <div style="display: flex; flex-direction: column; gap: 18px; max-width: 760px;">
+              <div>
+                <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 6px;">Terrain libre</div>
+                <h1 style="margin: 0 0 8px 0; font-size: 30px; font-weight: 800; letter-spacing: -0.015em;">Entraînement</h1>
+                <p style="margin: 0; font-size: 15px; line-height: 1.55; color: var(--color-neutral-800); max-width: 64ch;">Une séance vaut un point d'aptitude, et le point coûte plus cher à mesure que l'aptitude monte : une séance jusqu'à 7, deux jusqu'à 9, trois jusqu'à 11, quatre au-delà. Chaque grade impose son propre plafond — un élève sort de l'académie loin du maximum.</p>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 2px solid var(--color-text); border-bottom: 2px solid var(--color-text); padding: 10px 0;">
+                <span style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-neutral-700);">Séances disponibles</span>
+                <span style="font-size: 34px; font-weight: 800; color: var(--color-accent-700);">{{ seances }}</span>
+              </div>
+              <sc-for list="{{ entrainement }}" as="s" hint-placeholder-count="8">
+                <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-300);">
+                  <span><span style="font-size: 15px; font-weight: 600;">{{ s.nom }}</span> <span style="font-size: 12px; color: var(--color-neutral-600);">{{ s.note }}</span></span>
+                  <span style="font-size: 20px; font-weight: 800; min-width: 32px; text-align: right;">{{ s.val }}</span>
+                  <button onClick="{{ s.onTrain }}" style="border: 2px solid var(--color-text); background: transparent; padding: 8px 12px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;" style-hover="background:var(--color-accent-200)">{{ s.coutTxt }}</button>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </div>
+
+        <div style="flex: 1 1 300px; min-width: 0; border-left: 2px solid var(--color-text); border-top: 2px solid var(--color-text); padding: 20px 18px 40px 18px; display: flex; flex-direction: column; gap: 18px; align-content: start;">
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Aptitudes</div>
+            <sc-for list="{{ panneau }}" as="s" hint-placeholder-count="8">
+              <div style="padding: 6px 0; border-bottom: 1px solid var(--color-neutral-300);">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;"><span style="font-weight: 600;">{{ s.abbr }}</span><span style="font-weight: 800;">{{ s.val }}</span></div>
+                <div style="display: flex; gap: 2px; margin-top: 4px;">
+                  <sc-for list="{{ s.on }}" as="p" hint-placeholder-count="5"><span style="width: 100%; height: 7px; background: var(--color-text);"></span></sc-for>
+                  <sc-for list="{{ s.off }}" as="p" hint-placeholder-count="11"><span style="width: 100%; height: 7px; background: var(--color-neutral-300);"></span></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 8px;">Statut social</div>
+            <sc-for list="{{ jauges }}" as="j" hint-placeholder-count="3">
+              <div style="padding: 8px 0; border-bottom: 1px solid var(--color-neutral-300);">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;"><span style="font-weight: 600;">{{ j.nom }}</span><span style="font-weight: 800; color: var(--color-accent-700);">{{ j.val }}</span></div>
+                <div style="display: flex; gap: 2px; margin-top: 4px;">
+                  <sc-for list="{{ j.on }}" as="p" hint-placeholder-count="4"><span style="width: 100%; height: 7px; background: var(--color-accent);"></span></sc-for>
+                  <sc-for list="{{ j.off }}" as="p" hint-placeholder-count="6"><span style="width: 100%; height: 7px; background: var(--color-neutral-300);"></span></sc-for>
+                </div>
+                <div style="font-size: 11px; color: var(--color-neutral-700); margin-top: 3px; line-height: 1.4;">{{ j.note }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="border: 2px solid var(--color-text); padding: 12px;">
+            <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-700); font-weight: 600; margin-bottom: 6px;">Spécificité de clan</div>
+            <div style="font-size: 13px; line-height: 1.5; font-weight: 600;">{{ clanSpec }}</div>
+            <div style="font-size: 12px; line-height: 1.5; color: var(--color-neutral-700); margin-top: 6px;">{{ clanContrainte }}</div>
+          </div>
+
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600; margin-bottom: 6px;">Techniques</div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <sc-for list="{{ techniques }}" as="t" hint-placeholder-count="3"><span style="border: 1px solid var(--color-neutral-400); padding: 5px 8px; font-size: 12px;">{{ t.nom }}</span></sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-top: auto;">
+            <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-neutral-700); font-weight: 600;">Séances : {{ seances }} · Sauvegarde automatique</div>
+            <button onClick="{{ onAbandon }}" style="border: 2px solid var(--color-text); background: transparent; padding: 9px 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; text-align: left;" style-hover="background:var(--color-accent-200)">Nouveau personnage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;difficulte&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Souple&quot;,&quot;Standard&quot;,&quot;Impitoyable&quot;],&quot;default&quot;:&quot;Standard&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Règles&quot;},&quot;pointsCreation&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:12,&quot;min&quot;:6,&quot;max&quot;:24,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Règles&quot;}}">
+const CLE = "rp-naruto-sauvegarde-v1";
+const PIPS = 16;
+const CAP = 16;
+// Plafond d'aptitude par grade : un élève ne sort pas de l'académie au maximum.
+const PLAFONDS = [8, 10, 12, 13, 14, 15, 16, 16];
+const CAP_CREATION = 7;
+const COUT_SEANCE = (v) => (v < 8 ? 1 : v < 10 ? 2 : v < 12 ? 3 : 4);
+
+class Component extends DCLogic {
+  state = {
+    pret: false, ecran: "titre", etape: 0,
+    village: null, clan: null, nom: "", genre: "Non précisé", origine: null,
+    base: {}, alloc: {}, pool: 12,
+    rep: 30, moral: 0, noto: 0, seances: 0, rang: 0,
+    node: "depart", jet: null, journal: [], flags: [], tech: [],
+    tab: "recit", sauvegarde: null
+  };
+
+  componentDidMount() {
+    import("./naruto-data.js").then((D) => {
+      this.D = D;
+      let sv = null;
+      try { const raw = localStorage.getItem(CLE); if (raw) sv = JSON.parse(raw); } catch (e) { sv = null; }
+      this.setState({ pret: true, sauvegarde: sv });
+    });
+  }
+
+  // — helpers
+  get diff() { return { "Souple": -2, "Standard": 0, "Impitoyable": 2 }[this.props.difficulte ?? "Standard"] ?? 0; }
+  get pointsMax() { return this.props.pointsCreation ?? 12; }
+  villageRef(id) { return this.D.VILLAGES.find((v) => v.id === (id || this.state.village)) || this.D.VILLAGES[0]; }
+  clanRef(id) { return this.D.CLANS.find((c) => c.id === (id || this.state.clan)) || this.D.CLANS[0]; }
+
+  plafond(rang) { return PLAFONDS[Math.min(PLAFONDS.length - 1, rang ?? this.state.rang)] ?? CAP; }
+
+  statsFinales(rang) {
+    const p = this.plafond(rang);
+    const o = {};
+    this.D.STATS.forEach((s) => { o[s.k] = Math.min(p, (this.state.base[s.k] || 0) + (this.state.alloc[s.k] || 0)); });
+    return o;
+  }
+
+  ctx() {
+    return { village: this.state.village, clan: this.state.clan, clanRef: this.clanRef(), flags: this.state.flags, moral: this.state.moral, rep: this.state.rep, noto: this.state.noto };
+  }
+
+  sauver(patch) {
+    const s = { ...this.state, ...patch };
+    const plain = { ecran: s.ecran, village: s.village, clan: s.clan, nom: s.nom, genre: s.genre, origine: s.origine, base: s.base, alloc: s.alloc, pool: s.pool, rep: s.rep, moral: s.moral, noto: s.noto, seances: s.seances, rang: s.rang, node: s.node, journal: s.journal, flags: s.flags, tech: s.tech, tab: s.tab };
+    try { localStorage.setItem(CLE, JSON.stringify(plain)); } catch (e) { /* stockage indisponible */ }
+    return plain;
+  }
+
+  maj(patch) { const plain = this.sauver(patch); this.setState({ ...patch, sauvegarde: plain }); }
+
+  appliquer(ef, titre) {
+    if (!ef) return {};
+    const rangSuivant = Math.min(this.D.RANGS.length - 1, this.state.rang + (ef.rang || 0));
+    const plaf = this.plafond(rangSuivant);
+    const alloc = { ...this.state.alloc };
+    this.D.STATS.forEach((s) => {
+      if (typeof ef[s.k] !== "number") return;
+      const max = Math.max(0, plaf - (this.state.base[s.k] || 0));
+      alloc[s.k] = Math.max(0, Math.min(max, (alloc[s.k] || 0) + ef[s.k]));
+    });
+    const p = {
+      alloc,
+      rep: Math.max(0, Math.min(100, this.state.rep + (ef.rep || 0))),
+      moral: Math.max(-100, Math.min(100, this.state.moral + (ef.moral || 0))),
+      noto: Math.max(0, Math.min(100, this.state.noto + (ef.noto || 0))),
+      seances: Math.max(0, this.state.seances + (ef.seances || 0)),
+      rang: rangSuivant,
+      flags: ef.flags ? [...new Set([...this.state.flags, ...ef.flags])] : this.state.flags,
+      tech: ef.tech ? [...new Set([...this.state.tech, ...ef.tech])] : this.state.tech,
+      journal: ef.journal ? [...this.state.journal, { n: this.state.journal.length + 1, t: (titre ? titre + " — " : "") + ef.journal }] : this.state.journal
+    };
+    return p;
+  }
+
+  resoudre(id, patch) {
+    let cur = id;
+    let acc = { ...patch };
+    const snap = () => ({ ...this.ctx(), ...acc, clanRef: this.clanRef(), flags: acc.flags || this.state.flags, moral: acc.moral ?? this.state.moral, rep: acc.rep ?? this.state.rep });
+    let garde = 0;
+    while (this.D.NODES[cur] && this.D.NODES[cur].auto && garde++ < 10) cur = this.D.NODES[cur].auto(snap());
+    return { ...acc, node: cur, jet: null };
+  }
+
+  choisir(c) {
+    const titre = this.D.NODES[this.state.node].titre;
+    if (!c.test) { this.maj(this.resoudre(c.next, this.appliquer(c.effets, titre))); return; }
+    const stats = this.statsFinales();
+    const mod = stats[c.test.stat] || 0;
+    const seuil = c.test.seuil + this.diff;
+    const d20 = 1 + Math.floor(Math.random() * 20);
+    const ok = d20 + mod >= seuil || d20 === 20;
+    const br = ok ? c.reussite : c.echec;
+    this.maj({ jet: { statNom: this.D.STATS.find((s) => s.k === c.test.stat).nom, seuil, d20, mod, total: d20 + mod, ok, effets: br.effets, next: br.next, titre, mode: "recit" } });
+  }
+
+  mission(m) {
+    const stats = this.statsFinales();
+    const mod = stats[m.test.stat] || 0;
+    const seuil = m.test.seuil + this.diff;
+    const d20 = 1 + Math.floor(Math.random() * 20);
+    const ok = d20 + mod >= seuil;
+    const ef = ok ? { ...m.gain, journal: "Mission " + m.rang + " remplie : " + m.nom + "." } : { ...m.perte, journal: "Mission " + m.rang + " échouée : " + m.nom + "." };
+    this.maj({ jet: { statNom: this.D.STATS.find((s) => s.k === m.test.stat).nom, seuil, d20, mod, total: d20 + mod, ok, effets: ef, next: null, titre: "Mission", mode: "mission", missionId: m.id } });
+  }
+
+  suite() {
+    const j = this.state.jet;
+    const patch = this.appliquer(j.effets, j.titre === "Mission" ? "" : j.titre);
+    if (j.next) this.maj(this.resoudre(j.next, patch));
+    else this.maj({ ...patch, jet: null });
+  }
+
+  demarrer() {
+    const v = this.villageRef(), c = this.clanRef();
+    const base = {};
+    this.D.STATS.forEach((s) => { base[s.k] = 2 + (v.bonus[s.k] || 0) + (c.bonus[s.k] || 0); });
+    this.setState({ base, alloc: {}, pool: this.pointsMax, etape: 2 });
+  }
+
+  pips(v, max) {
+    const n = Math.max(0, Math.min(PIPS, Math.round((v / max) * PIPS)));
+    return { on: Array.from({ length: n }, (_, i) => ({ i })), off: Array.from({ length: PIPS - n }, (_, i) => ({ i })) };
+  }
+
+  renderVals() {
+    if (!this.state.pret) return { estTitre: true, nbClans: "—", aSauvegarde: false };
+    const D = this.D, S = this.state;
+    const v = S.village ? this.villageRef() : null;
+    const c = S.clan ? this.clanRef() : null;
+    const stats = this.statsFinales();
+    const bonusTxt = (b) => Object.keys(b || {}).length ? Object.entries(b).map(([k, n]) => (D.STATS.find((s) => s.k === k) || { nom: k }).nom + " +" + n).join(", ") : "—";
+    const nomAffiche = S.nom.trim() || "Sans nom déclaré";
+    const moralTxt = S.moral >= 40 ? "Loyauté affirmée" : S.moral >= 0 ? "Équilibre" : S.moral > -30 ? "Dérive" : S.moral > -60 ? "Voie de la trahison ouverte" : "Manteau rouge à portée";
+
+    const base = {
+      estTitre: S.ecran === "titre", estCreation: S.ecran === "creation", estJeu: S.ecran === "jeu",
+      nbClans: D.CLANS.length,
+      aSauvegarde: !!S.sauvegarde && S.sauvegarde.ecran === "jeu",
+      resumeSauvegarde: S.sauvegarde ? ((S.sauvegarde.nom || "Sans nom") + " · " + (D.NODES[S.sauvegarde.node] ? D.NODES[S.sauvegarde.node].titre : "en cours")) : "",
+      onNouvelle: () => this.setState({ ecran: "creation", etape: 0, village: null, clan: null, nom: "", origine: null, alloc: {}, base: {}, rep: 30, moral: 0, noto: 0, seances: 0, rang: 0, node: "depart", journal: [], flags: [], tech: [], jet: null, tab: "recit" }),
+      onContinuer: () => this.setState({ ...S.sauvegarde, pret: true, sauvegarde: S.sauvegarde }),
+      onRetour: () => this.setState({ etape: Math.max(0, S.etape - 1) }),
+      nomAffiche, villageNom: v ? v.nom : "—", clanNom: c ? c.nom : "—",
+      rangNom: D.RANGS[S.rang], seances: S.seances
+    };
+
+    if (S.ecran === "creation") {
+      const etapes = ["Village", "Clan", "Identité & aptitudes", "Validation"];
+      const genresL = ["Femme", "Homme", "Non précisé"];
+      const originesL = [
+        { id: "orphelin", nom: "Orphelin de guerre", effet: "Volonté +1, réputation +5", ef: { vol: 1, rep: 5 } },
+        { id: "heritier", nom: "Héritier déclaré du clan", effet: "Réputation +10, moral −5", ef: { rep: 10, moral: -5 } },
+        { id: "rue", nom: "Enfant des quartiers extérieurs", effet: "Furtivité +1, notoriété +5", ef: { fur: 1, noto: 5 } },
+        { id: "civil", nom: "Fils de civils", effet: "Stratégie +1, moral +5", ef: { int: 1, moral: 5 } }
+      ];
+      const pickOrigine = (o) => {
+        const alloc = { ...S.alloc };
+        D.STATS.forEach((s) => { if (o.ef[s.k]) alloc[s.k] = (alloc[s.k] || 0) + o.ef[s.k]; });
+        if (S.origine) {
+          const old = originesL.find((x) => x.id === S.origine);
+          D.STATS.forEach((s) => { if (old.ef[s.k]) alloc[s.k] = Math.max(0, (alloc[s.k] || 0) - old.ef[s.k]); });
+        }
+        const prev = S.origine ? originesL.find((x) => x.id === S.origine).ef : {};
+        this.setState({
+          origine: o.id, alloc,
+          rep: Math.max(0, 30 + (o.ef.rep || 0)),
+          moral: (o.ef.moral || 0), noto: (o.ef.noto || 0)
+        });
+        void prev;
+      };
+      return {
+        ...base,
+        etapeNum: S.etape + 1, etapeNom: etapes[S.etape],
+        etape0: S.etape === 0, etape1: S.etape === 1, etape2: S.etape === 2, etape3: S.etape === 3,
+        villagesJouables: D.VILLAGES.filter((x) => x.jouable).map((x) => ({
+          ...x, bonusTxt: bonusTxt(x.bonus), corpsTxt: x.corps.join(" · "),
+          onPick: () => this.setState({ village: x.id, clan: null, etape: 1 })
+        })),
+        villagesBloques: D.VILLAGES.filter((x) => !x.jouable),
+        clansVillage: v ? D.CLANS.filter((x) => x.village === v.id).map((x) => ({
+          ...x, bonusTxt: bonusTxt(x.bonus), techTxt: x.tech.join(" · "),
+          onPick: () => { this.setState({ clan: x.id }, () => this.demarrer()); }
+        })) : [],
+        nom: S.nom,
+        onNom: (e) => this.setState({ nom: e.target.value }),
+        genres: genresL.map((g) => ({ nom: g, bg: S.genre === g ? "var(--color-text)" : "var(--color-bg)", fg: S.genre === g ? "var(--color-bg)" : "var(--color-text)", onPick: () => this.setState({ genre: g }) })),
+        origines: originesL.map((o) => ({ ...o, bg: S.origine === o.id ? "var(--color-accent-200)" : "var(--color-bg)", fg: "var(--color-text)", onPick: () => pickOrigine(o) })),
+        pool: S.pool,
+        allocation: D.STATS.map((s) => ({
+          nom: s.nom,
+          detail: "base " + (S.base[s.k] || 0) + " · max " + CAP_CREATION + " à la création",
+          total: (S.base[s.k] || 0) + (S.alloc[s.k] || 0),
+          onInc: () => { if (S.pool > 0 && (S.base[s.k] || 0) + (S.alloc[s.k] || 0) < CAP_CREATION) this.setState({ pool: S.pool - 1, alloc: { ...S.alloc, [s.k]: (S.alloc[s.k] || 0) + 1 } }); },
+          onDec: () => { if ((S.alloc[s.k] || 0) > 0) this.setState({ pool: S.pool + 1, alloc: { ...S.alloc, [s.k]: S.alloc[s.k] - 1 } }); }
+        })),
+        onValiderStats: () => this.setState({ etape: 3 }),
+        recap: c ? [
+          { k: "Village", v: v.nom + " — " + v.pays + " · " + v.kage },
+          { k: "Clan", v: c.nom + " · " + c.spec },
+          { k: "Genre", v: S.genre },
+          { k: "Origine", v: S.origine ? originesL.find((x) => x.id === S.origine).nom : "Non déclarée" },
+          { k: "Aptitudes", v: D.STATS.map((s) => s.abbr + " " + stats[s.k]).join(" · ") },
+          { k: "Points non dépensés", v: S.pool + " (perdus à l'entrée)" },
+          { k: "Techniques de départ", v: c.tech.join(" · ") },
+          { k: "Contrainte", v: c.contrainte }
+        ] : [],
+        onLancer: () => this.maj({ ecran: "jeu", tab: "recit" })
+      };
+    }
+
+    if (S.ecran === "jeu") {
+      const n = D.NODES[S.node] || D.NODES.libre;
+      const ctx = this.ctx();
+      const onglets = [["recit", "Récit"], ["carte", "Carte"], ["fiche", "Fiche"], ["entrainement", "Entraînement"]];
+      const libre = S.flags.includes("prologue_fini") || S.rang >= 1;
+      const jet = S.jet ? {
+        ...S.jet,
+        verdict: S.jet.ok ? "Réussite" : "Échec",
+        verdictBg: S.jet.ok ? "var(--color-accent)" : "var(--color-text)",
+        verdictFg: "var(--color-bg)",
+        suite: S.jet.effets && S.jet.effets.journal ? S.jet.effets.journal : (S.jet.ok ? "Le résultat te laisse la main." : "La trame bifurque : tu continues autrement.")
+      } : null;
+
+      return {
+        ...base,
+        onglets: onglets.map(([k, l]) => ({ nom: l, bg: S.tab === k ? "var(--color-text)" : "var(--color-bg)", fg: S.tab === k ? "var(--color-bg)" : "var(--color-text)", onPick: () => this.maj({ tab: k }) })),
+        tabRecit: S.tab === "recit", tabCarte: S.tab === "carte", tabFiche: S.tab === "fiche", tabEntrainement: S.tab === "entrainement",
+        node: {
+          titre: n.titre, lieu: n.lieu,
+          texte: n.texte.map((t, i) => ({ t, i })),
+          choix: (n.choix || []).filter((ch) => !ch.cond || ch.cond(ctx)).map((ch, i) => ({
+            txt: ch.txt, i,
+            test: ch.test ? "Jet " + D.STATS.find((s) => s.k === ch.test.stat).abbr + " · seuil " + (ch.test.seuil + this.diff) : "",
+            onPick: () => this.choisir(ch)
+          }))
+        },
+        jetEnCours: !!S.jet && S.jet.mode === "recit",
+        jetMission: !!S.jet && S.jet.mode === "mission",
+        choixOuverts: !S.jet,
+        jet, onSuite: () => this.suite(),
+        carte: D.VILLAGES.map((x) => ({
+          pays: x.pays, nom: x.nom, bijuu: x.bijuu === "—" ? "Aucun bijū déclaré" : x.bijuu,
+          etat: x.id === S.village ? "Village d'attache" : x.jouable ? "Grande puissance" : "Territoire au registre",
+          bg: x.id === S.village ? "var(--color-accent)" : "var(--color-bg)", fg: x.id === S.village ? "var(--color-bg)" : "var(--color-text)"
+        })),
+        missionsEtat: libre ? "ouvert" : "verrouillé jusqu'à la diplômation",
+        missions: (libre ? D.MISSIONS.filter((m) => m.village === "*" || m.village === S.village) : []).map((m) => ({
+          ...m, testTxt: "jet " + D.STATS.find((s) => s.k === m.test.stat).abbr + " seuil " + (m.test.seuil + this.diff),
+          rapportOuvert: !!S.jet && S.jet.mode === "mission" && S.jet.missionId === m.id,
+          onRun: () => this.mission(m)
+        })),
+        fiche: [
+          { k: "Village", v: v.nom + " — " + v.pays },
+          { k: "Grade", v: D.RANGS[S.rang] + " · plafond d'aptitude " + this.plafond() + " · rang suprême visé : " + v.kage },
+          { k: "Clan", v: c.nom },
+          { k: "Spécificité", v: c.spec },
+          { k: "Bijū sur le territoire", v: v.bijuu },
+          { k: "Moral", v: S.moral + " — " + moralTxt },
+          { k: "Réputation / notoriété", v: S.rep + " au village · " + S.noto + " hors frontières" },
+          { k: "Drapeaux de trame", v: S.flags.length ? S.flags.join(", ") : "aucun" }
+        ],
+        echelle: D.RANGS.map((r, i) => ({ nom: r, etat: i < S.rang ? "acquis" : i === S.rang ? "en cours" : "verrouillé", fg: i <= S.rang ? "var(--color-text)" : "var(--color-neutral-500)", fw: i === S.rang ? "800" : "400" })),
+        arcs: D.ARCS,
+        journal: S.journal.slice().reverse(),
+        techniques: [...c.tech, ...S.tech].map((t) => ({ nom: t })),
+        clanSpec: c.spec, clanContrainte: c.contrainte,
+        panneau: D.STATS.map((s) => ({ abbr: s.abbr, nom: s.nom, val: stats[s.k] + " / " + this.plafond(), ...this.pips(stats[s.k], this.plafond()) })),
+        jauges: [
+          { nom: "Réputation", val: S.rep, note: S.rep >= 60 ? "Dossier remarqué en haut lieu" : S.rep >= 30 ? "Dossier propre" : "Sous surveillance", ...this.pips(S.rep, 100) },
+          { nom: "Moral", val: S.moral, note: moralTxt, ...this.pips(Math.max(0, S.moral + 100), 200) },
+          { nom: "Notoriété", val: S.noto, note: S.noto >= 40 ? "Nom connu hors du village" : "Inconnu à l'étranger", ...this.pips(S.noto, 100) }
+        ],
+        entrainement: D.STATS.map((s) => {
+          const val = stats[s.k];
+          const plaf = this.plafond();
+          const bloque = val >= plaf;
+          const cout = COUT_SEANCE(val);
+          return {
+            nom: s.nom, val,
+            note: bloque ? "plafond du grade " + D.RANGS[S.rang] + " atteint (" + plaf + ") — monter en grade pour aller plus loin" : "+1 au total des jets " + s.abbr + " · plafond " + plaf,
+            coutTxt: bloque ? "Plafond" : "+1 · " + cout + (cout > 1 ? " séances" : " séance"),
+            onTrain: () => { if (!bloque && S.seances >= cout) this.maj({ seances: S.seances - cout, alloc: { ...S.alloc, [s.k]: (S.alloc[s.k] || 0) + 1 } }); }
+          };
+        }),
+        onAbandon: () => this.setState({ ecran: "titre", etape: 0 })
+      };
+    }
+
+    return base;
+  }
+}
+</script>
+</body>
+</html>
