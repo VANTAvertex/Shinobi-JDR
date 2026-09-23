@@ -343,7 +343,8 @@ function renderCreation() {
           "Nom complet",
           h("input", {
             value: state.nom, placeholder: "Nom, prénom",
-            onInput: (e) => setState({ nom: e.target.value }),
+            // Pas de re-rendu : il recréerait le champ et lui ferait perdre le focus.
+            onInput: (e) => { state.nom = e.target.value; },
             style: "border: 2px solid var(--color-text); background: var(--color-bg); padding: 11px 12px; font-size: 16px; letter-spacing: 0; text-transform: none; font-weight: 400;"
           })
         ]),
