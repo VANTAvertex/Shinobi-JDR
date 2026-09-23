@@ -72,13 +72,14 @@ commits, seulement le contenu final des fichiers.
 
 ## Ce qui est jouable dans cette version
 
-- **Création de personnage** : 3 villages jouables (Konoha, Suna, Kiri — 7
-  autres au registre, non jouables), 26 clans avec spécificité, techniques de
-  départ et contrainte propres, origine, répartition de points d'aptitude.
-- **Prologue** (~25 nœuds narratifs) : de l'inscription à l'académie jusqu'à la
+- **Création de personnage** (périmètre bêta) : 2 villages jouables (Konoha,
+  Kiri — les 8 autres au registre, non jouables), 4 clans avec spécificité,
+  techniques de départ et contrainte propres (Konoha : Uchiha, Senju ; Kiri :
+  Kaguya, Yuki), origine, répartition de points d'aptitude.
+- **Prologue** (~20 nœuds narratifs) : de l'inscription à l'académie jusqu'à la
   remise du bandeau de genin, avec des embranchements exclusifs pour les clans
-  Uchiha, Nara, Senju, Sabaku et Kaguya, et pour chaque village (pierre du
-  souvenir à Konoha, rationnement de l'eau à Suna, socles des Sept Épéistes à
+  Uchiha, Senju et Kaguya (Yuki passe par le nœud d'héritage générique), et
+  pour chaque village (pierre du souvenir à Konoha, socles des Sept Épéistes à
   Kiri), plus un nœud jinchūriki.
 - **Résolution des choix** : jet de d20 + stat visible contre un seuil ; un
   échec au prologue ne bloque jamais la suite, il fait juste bifurquer la
@@ -97,5 +98,5 @@ D'après l'historique de conception (`chats/chat1.md`), plusieurs arcs sont
 choix du joueur) mais **pas encore construits comme des arcs jouables** :
 l'examen chūnin, la sélection jōnin, l'ANBU, la Grande Guerre des shinobi,
 la voie de la trahison / un groupe criminel, le recrutement dans l'Akatsuki,
-et la lignée (transmettre une partie de ses stats à un enfant). Kumo et Iwa
-restent au registre sans clans détaillés.
+et la lignée (transmettre une partie de ses stats à un enfant). Suna, Kumo et
+Iwa restent au registre sans clans détaillés.

@@ -5,7 +5,7 @@
 
 import * as D from "./game-data.js";
 
-const CLE = "rp-naruto-sauvegarde-v1";
+const CLE = "rp-naruto-sauvegarde-v2";
 const PIPS = 16;
 const CAP = 16;
 // Plafond d'aptitude par grade : un élève ne sort pas de l'académie au maximum.
@@ -16,7 +16,7 @@ const COUT_SEANCE = (v) => (v < 8 ? 1 : v < 10 ? 2 : v < 12 ? 3 : 4);
 // Props exposed as editable presets in Claude Design; fixed to their
 // defaults here since this build has no design-time prop editor.
 const DIFF = 0; // "Standard"
-const POINTS_MAX = 12;
+const POINTS_MAX = 5;
 
 const ORIGINES = [
   { id: "orphelin", nom: "Orphelin de guerre", effet: "Volonté +1, réputation +5", ef: { vol: 1, rep: 5 } },
@@ -195,9 +195,9 @@ function renderTitre() {
   const onContinuer = () => setState({ ...state.sauvegarde, pret: true, sauvegarde: state.sauvegarde });
 
   const lignes = [
-    ["Villages jouables", "Konoha · Suna · Kiri"],
+    ["Villages jouables", "Konoha · Kiri"],
     ["Clans au registre", String(D.CLANS.length)],
-    ["Trames de clan exclusives", "Uchiha · Nara · Senju · Sabaku · Kaguya"],
+    ["Trames de clan exclusives", "Uchiha · Senju · Kaguya"],
     ["Résolution", "d20 + stat vs seuil"],
     ["Échec au prologue", "Jamais fatal — la trame bifurque"],
     ["Sauvegarde", "Automatique, locale"]
@@ -265,7 +265,7 @@ function renderCreation() {
     const villagesBloques = D.VILLAGES.filter((x) => !x.jouable);
     return h("div", { style: "display: flex; flex-direction: column; gap: 16px;" }, [
       h("h2", { style: "margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.01em;" }, "Provenance"),
-      h("p", { style: "margin: 0; max-width: 70ch; font-size: 15px; line-height: 1.55; color: var(--color-neutral-800);" }, "Le village décide de la doctrine, des corps d'élite accessibles, du bijū gardé sur place et des trames exclusives. Trois villages sont jouables dans cette version ; les autres sont au registre."),
+      h("p", { style: "margin: 0; max-width: 70ch; font-size: 15px; line-height: 1.55; color: var(--color-neutral-800);" }, "Le village décide de la doctrine, des corps d'élite accessibles, du bijū gardé sur place et des trames exclusives. Deux villages sont jouables dans cette bêta ; les autres sont au registre."),
       h("div", { style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; background: var(--color-text); border: 2px solid var(--color-text);" },
         villagesJouables.map((x) => h("button", {
           onClick: () => setState({ village: x.id, clan: null, etape: 1 }),
